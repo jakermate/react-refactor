@@ -1,20 +1,17 @@
 # spinoff README
 
-This is the README for your extension "spinoff". After writing up a brief description, we recommend including the following sections.
+VSCode extension to take a code block and generate a new component file for it.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Useful for when you decide a component will be reused more than one, and it should belong to it's own dedicated component file.
 
-For example if there is an image subfolder under your extension project workspace:
+Support for
+    - React (.jsx, .tsx)
+    - Vue (.vue)
+    - Svelte (.svelte)
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+ve any requirements or dependencies, add a section describing those and how to install and configure them.
 
 ## Extension Settings
 
