@@ -10,18 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:spinoff.helloWorld"
+        "onCommand:spinoff.reactComponent"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "spinoff.helloWorld",
-				"title": "Hello World"
-			},
-			{
-				"command": "spinoff.spinoffReactComponent",
-				"title": "Spinoff New React Component"
+				"command": "spinoff.reactComponent",
+				"title": "Spinoff: New React Component"
 			}
 		]
 	},
