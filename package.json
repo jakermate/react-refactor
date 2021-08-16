@@ -10,16 +10,44 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:spinoff.reactComponent"
+        "onCommand:spinoff.createComponentFile",
+		"onCommand:spinoff.createComponentInline"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "spinoff.reactComponent",
-				"title": "Spinoff: New React Component"
+				"command": "spinoff.createComponentFile",
+				"title": "Spinoff: New Component File"
+			},
+			{
+				"command": "spinoff.createComponentInline",
+				"title": "Spinoff: New Component In File"
 			}
-		]
+		],
+		"configuration":[
+			{
+				"title": "autosave",
+				"properties": {
+					
+				}
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "editorHasSelection",
+					"command": "spinoff.createComponentFile",
+					"group": "spinoffGroup"
+				},
+				{
+					"when": "editorHasSelection",
+					"command": "spinoff.createComponentInline",
+					"group": "spinoffGroup"
+				}
+			]
+		}
+		
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
