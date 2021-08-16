@@ -44,8 +44,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// Get current component type of opened file
 			// Extension will automatically create new component of current type
-			let currentComponentType = currentFilename?.split('.')[currentFilename?.split('.').length - 1]
-			console.log('Current component type is ' + currentComponentType)
+			let currentComponentEXT = currentFilename?.split('.')[currentFilename?.split('.').length - 1]
+			console.log('Current component type is ' + currentComponentEXT)
 
 			// Get input for component name
 			let newComponentName = await window.showInputBox({
@@ -53,13 +53,14 @@ export function activate(context: vscode.ExtensionContext) {
 				value: `NewComponent`,
 				valueSelection: [0, 12]
 			})
-			
+			// Exit script if file already exists with that name
+			if(!validateFileDoesNotExist(generateDocumentPath(editor!.document.uri.fsPath) + newComponentName + "." + currentComponentEXT)) return
 
 			// Snippet of all code to be copied into new component file
-			let snippet = buildSnippet(getTemplate(currentComponentType || 'jsx'), newComponentName || "New Component", codeBlock)
+			let snippet = buildSnippet(getTemplate(currentComponentEXT || 'jsx'), newComponentName || "New Component", codeBlock)
 			console.log('new code snippet  === ' + snippet)
 
-			let createFileResponse = await createFile(snippet, newComponentName!, editor!)
+			let createFileResponse = await createNewFile(snippet, newComponentName!, editor!, currentComponentEXT!)
 			console.log(createFileResponse)
 			// Delete selection from current file
 
@@ -112,6 +113,14 @@ function validateFileName(filename: string | undefined, path: string | undefined
 	if (filename.length === 0) return false
 	return false
 }
+function validateFileDoesNotExist(filePath: string): boolean{
+	console.log('Checking if file exists @ ' + filePath)
+	if(vscode.workspace.fs.stat(vscode.Uri.parse(filePath))){
+		vscode.window.showInformationMessage('File with that name already exists.')
+		return false
+	}
+	return true
+}
 // Templating
 function getTemplate(extension: string): string {
 	console.log('getting template for extension ' + extension)
@@ -123,18 +132,19 @@ function buildSnippet(templateString: string, componentName: string, codeBlock: 
 	templateString = templateString.replace("NAME_PLACEHOLDER", componentName).replace('CODE_PLACEHOLDER', codeBlock)
 	return templateString
 }
-async function createFile(snippet: string, newName: string, editor: vscode.TextEditor): Promise<boolean>{
-	let filepath = getFilePath(editor.document.uri.fsPath)
+async function createNewFile(snippet: string, newName: string, editor: vscode.TextEditor, extension: string): Promise<boolean>{
+	let filepath = generateDocumentPath(editor.document.uri.fsPath)
 	console.log('file path ' + filepath)
-	const newFile = vscode.Uri.parse('untitled:' + path.join(filepath, newName));
-	vscode.window.showTextDocument(newFile)
+	const newFileURI = vscode.Uri.parse('untitled:' + path.join(filepath, newName + `.${extension}`));
+	let newDocument = await vscode.workspace.openTextDocument(newFileURI)
+	await vscode.window.showTextDocument(newDocument)
 	let workspaceEdit = new vscode.WorkspaceEdit()
-	workspaceEdit.insert(newFile, new vscode.Position(0,0), snippet)
+	workspaceEdit.insert(newFileURI, new vscode.Position(0,0), snippet)
 	// Apply edit to workspace
-	let successfulEdit = vscode.workspace.applyEdit(workspaceEdit)
+	let successfulEdit = await vscode.workspace.applyEdit(workspaceEdit)
 	return successfulEdit
 }
-function getFilePath(path: string){
+function generateDocumentPath(path: string){
 	console.log('path - ' + path)
 	let pathArray = path.split("\\")
 	let lastIndex = pathArray.pop()
