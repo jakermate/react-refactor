@@ -18,30 +18,41 @@
 		"commands": [
 			{
 				"command": "spinoff.createComponentFile",
-				"title": "Spinoff: New Component File"
+				"title": "Selection => New Component File"
 			},
 			{
 				"command": "spinoff.createComponentInline",
-				"title": "Spinoff: New Component In File"
+				"title": "Selection => New Component In Current File"
 			}
 		],
 		"configuration":[
 			{
-				"title": "autosave",
+				"title": "Spinoff Component Generator",
 				"properties": {
-					
+					"spinoff.defaultComponentLocation":{
+						"type":"string",
+						"default": "New File",
+						"enum": ["New File", "Current File"],
+						"enumDescriptions": ["Creates a new file component.", "Creates a new component in the current file if possible."],
+						"description": "This is the main spinoff configuration setting."
+					},
+					"spinoff.enableContextMenu":{
+						"type":"boolean",
+						"default": true,
+						"description": "Enable component generator options in editor context menu (right click)."
+					}
 				}
 			}
 		],
 		"menus": {
 			"editor/context": [
 				{
-					"when": "editorHasSelection",
+					"when": "editorHasSelection && config.spinoff.enableContextMenu",
 					"command": "spinoff.createComponentFile",
 					"group": "spinoffGroup"
 				},
 				{
-					"when": "editorHasSelection",
+					"when": "editorHasSelection && config.spinoff.enableContextMenu",
 					"command": "spinoff.createComponentInline",
 					"group": "spinoffGroup"
 				}
