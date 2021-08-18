@@ -61,25 +61,24 @@
           "extractor.enableContextMenu": {
             "type": "boolean",
             "default": true,
-            "description": "Enable component generator options in editor context menu (right click)."
-          }
+            "description": "Enable component generator options in editor context menu (right click)."          }
         }
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "when": "config.extractor.enableContextMenu",
+          "when": "editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescriptreact && config.extractor.enableContextMenu",
           "command": "extractor.extractToNewFile",
           "group": "extractorGroup"
         },
         {
-          "when": "config.extractor.enableContextMenu",
+          "when": "editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescriptreact && config.extractor.enableContextMenu",
           "command": "extractor.extractToModuleScope",
           "group": "extractorGroup"
         },
         {
-          "when": "config.extractor.enableContextMenu",
+          "when": "editorLangId == javascriptreact || editorLangId == javascript || editorLangId == typescriptreact && config.extractor.enableContextMenu",
           "command": "extractor.selectToClosingTag",
           "group": "extractorGroup"
         }
