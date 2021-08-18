@@ -1,16 +1,16 @@
-# extractor Component Generator
-VSCode extension to take a code block and generate a new component file for it.
+# React Extract - React Refactoring Tools for VSCode
+VSCode extension providing functions for refactoring React components.
+
 
 ## Features
+Methods included:
+    - Extract Component to New File
+    - Extract Component to Enclosing Scope
+    - Extract Component to Module Scope (Global File Level)
 
-Useful for when you decide a component will be reused more than once, and it should belong to it's own dedicated component file.
-
-Support for
-    - React (.jsx, .tsx)
-    - Vue (.vue)
-    - Svelte (.svelte)
-
-ve any requirements or dependencies, add a section describing those and how to install and configure them.
+## Requirements
+This extension requires that VSCode's default <b>Emmet</b> actions/extension is currently enabled.
+Methods are provided either through the command palette or editor context menus (editor context menu options will only apprear in .jsx, .tsx, .js) language files.
 
 ## Extension Settings
 This extension contributes the following settings:
