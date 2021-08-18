@@ -23,7 +23,9 @@ export function returnClassComponent(name: string, codeBlock: string): string{
 }
 export function returnArrowComponent(name: string, codeBlock: string): string{
     return `
-
+        const ${name} = (${codeBlock.includes('props') ? 'props' : ''}) => {
+            ${codeBlock}
+        }
     `
 }
 export function validateComponentName(nameRequest: string): string{
