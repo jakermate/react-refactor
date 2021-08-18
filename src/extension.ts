@@ -3,6 +3,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path'
 import * as fs from 'fs'
+import * as funcs from './lib/func'
+import * as parser from '@babel/parser'
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -29,13 +31,6 @@ export function activate(context: vscode.ExtensionContext) {
 			let codeBlock = getCodeSelection(window, editor!)
 
 
-			let currentFilename = editor?.document.fileName
-
-			// Get current component type of opened file
-			// Extension will automatically create new component of current type
-			let currentComponentEXT = currentFilename?.split('.')[currentFilename?.split('.').length - 1]
-			// console.log('Current component type is ' + currentComponentEXT)
-
 			// Get input for component name
 			let newComponentName = await window.showInputBox({
 				// placeHolder: `Name .${currentComponentType} component...`,
@@ -45,13 +40,15 @@ export function activate(context: vscode.ExtensionContext) {
 			// Exit command if new name not set
 			if (newComponentName === null || newComponentName == 'undefined' || newComponentName === undefined) return
 
-
 			// Exit script if file already exists with that name
 			// if(await validateFileDoesNotExist(generateDocumentPath(editor!.document.uri.fsPath) + newComponentName + "." + currentComponentEXT)) return
 			// console.log('File does not exist.')
-			// Snippet of all code to be copied into new component file
-			let snippet = buildSnippet(getTemplate(currentComponentEXT || 'jsx'), newComponentName || "New Component", codeBlock!)
+			console.log('parsing')
+			parseJSX(codeBlock!)
+			console.log('parsed')
 
+			// Snippet of all code to be copied into new component file
+			let snippet = getTemplate('functional', funcs.validateComponentName(newComponentName), codeBlock!)
 			// Create the new file
 			// let createFileResponse = await createNewFile(snippet, newComponentName!, editor!, currentComponentEXT!)
 
@@ -91,12 +88,6 @@ export function deactivate() { }
 
 
 // Validation
-function validateComponentType(type: string): string {
-	let extension = ""
-
-
-	return extension
-}
 function validateFileName(filename: string | undefined, path: string | undefined): boolean {
 	if (!filename) return false
 	if (filename.length === 0) return false
@@ -138,23 +129,18 @@ async function expandSelection() {
 }
 // Tag parsing
 function parseJSX(jsxString: string) {
+	
+	// console.log(parsedJSX)
 	return jsxString
 }
-// Refactoring Methods
-function refactorToArrow() {
-}
 // Templating
-function getTemplate(extension: string): string {
-	console.log('getting template for extension ' + extension)
-	let template: string = fs.readFileSync(path.join(__dirname, 'templates', `${extension}.${extension}`)).toString()
-	console.log(template)
-	return template
+function getTemplate(type: string = 'functional', componentName: string, codeBlock: string): string {
+	if(type === 'functional') return funcs.returnFunctionalComponent(componentName, codeBlock)
+	if(type === 'class') return funcs.returnArrowComponent(componentName, codeBlock)
+	if(type === 'arrow') return funcs.returnArrowComponent(componentName, codeBlock)
+	return funcs.returnFunctionalComponent(componentName, codeBlock)
 }
-function buildSnippet(templateString: string, componentName: string, codeBlock: string): string {
-	codeBlock = parseJSX(codeBlock)
-	templateString = templateString.replace("NAME_PLACEHOLDER", componentName).replace('CODE_PLACEHOLDER', codeBlock)
-	return templateString
-}
+
 async function createNewFile(snippet: string, newName: string, editor: vscode.TextEditor, extension: string): Promise<boolean> {
 	let filepath = generateDocumentPath(editor.document.uri.fsPath)
 	console.log('file path ' + filepath)
