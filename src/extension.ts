@@ -5,21 +5,6 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as parser from 'htmlparser2'
 
-// Quick Pick Items
-const quickPickItems: vscode.QuickPickItem[] = [{
-	// description: 'React Class Component',
-	// detail: 'React Class Component',
-	label: '$(reactjs) React Class'
-}, {
-	// description: 'React Functional Component',
-	// detail: 'React Functional Component',
-	label: '$(reactjs) React Functional'
-}, {
-	// description: 'Vue Component',
-	// detail: '$(git-merge) Vue Component',
-	label: '$(git-merge) Vue'
-}
-]
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -78,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// Create the new file
 			// let createFileResponse = await createNewFile(snippet, newComponentName!, editor!, currentComponentEXT!)
-			
+
 			// Delete code block from source file
 			let codeReplacementResponse = await replaceSelectionWithComponentTag(editor!, newComponentName!)
 			
@@ -96,25 +81,6 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() { }
 
-
-// configs
-const componentFrameworks = {
-	react: {
-		name: 'react',
-		extensions: ['.jsx', '.tsx'],
-		template: path.join(__dirname, "templates", "jsx.jsx")
-	},
-	vue: {
-		name: 'vue',
-		extensions: ['.vue'],
-		template: path.join(__dirname, "templates", "vue.vue")
-	},
-	svelte: {
-		name: "svelte",
-		extensions: ['.svelte'],
-		template: path.join(__dirname, "templates", "svelte.svelte")
-	}
-}
 
 // Validation
 function validateComponentType(type: string): string {
@@ -194,7 +160,8 @@ function generateDocumentPath(path: string) {
 	let lastIndex = pathArray.pop()
 	return pathArray.join('\\') + "\\"
 }
-// Modifying Document
+// Modifying Document Funcionality
+// Inserts a new import statement below last existing import statement, bringing in newly created component.
 async function insertImportStatement(editor: vscode.TextEditor, newComponentName: string): Promise<string> { // return boolean on success
 	let lineCount: number | undefined = editor?.document.lineCount || 0
 	let insertLine = 0
