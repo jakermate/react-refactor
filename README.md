@@ -1,4 +1,4 @@
-# Spinoff Component Generator
+# extractor Component Generator
 VSCode extension to take a code block and generate a new component file for it.
 
 ## Features
@@ -15,8 +15,8 @@ ve any requirements or dependencies, add a section describing those and how to i
 ## Extension Settings
 This extension contributes the following settings:
 
-* `spinoff.defaultComponentLocation`: "New File"/"Current File" to set default behavior for where to generate new component.  (Current file will only work on certain frameworks that allow for multiple components per file.)
-* `spinoff.enableContextMenu`: true/false to enable editor context menu commands
+* `extractor.defaultComponentLocation`: "New File"/"Current File" to set default behavior for where to generate new component.  (Current file will only work on certain frameworks that allow for multiple components per file.)
+* `extractor.enableContextMenu`: true/false to enable editor context menu commands
 
 ## Known Issues
 
