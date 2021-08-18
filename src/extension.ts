@@ -3,7 +3,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path'
 import * as fs from 'fs'
-import * as parser from 'htmlparser2'
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -19,27 +18,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Create extractor from selected code
 	context.subscriptions.push(
-		vscode.commands.registerCommand('extractor.createComponentFile', async () => {
-			// get global vars
+		vscode.commands.registerCommand('extractor.extractToNewFile', async () => {
+			console.log('New file command.')
+			// Set variables for current window/editor
 			let window = vscode.window
 			let editor = window.activeTextEditor
-			let doc: vscode.TextDocument | undefined = editor?.document
 
-			// Load in user configs
-			let configs = vscode.workspace.getConfiguration('extractor')
+			// Get text selection
+			// First, expand selection to fully encompass selected/partially selected tags
+			let codeBlock = getCodeSelection(window, editor!)
 
-			// get text selection
-			let selection: vscode.Selection[] | undefined = editor?.selections
-			if (selection?.length === 0) {
-				window.showInformationMessage("No selection to spin off.")
-				return
-			}
-			// Loop through each line of selection and build code block
-			let codeBlock = ""
-			selection?.forEach((line, index) => {
-				let text = doc?.getText(new vscode.Range(line.start, line.end))
-				codeBlock += text
-			})
 
 			let currentFilename = editor?.document.fileName
 
@@ -54,28 +42,48 @@ export function activate(context: vscode.ExtensionContext) {
 				value: `NewComponent`,
 				valueSelection: [0, 12]
 			})
+			// Exit command if new name not set
+			if (newComponentName === null || newComponentName == 'undefined' || newComponentName === undefined) return
+
 
 			// Exit script if file already exists with that name
 			// if(await validateFileDoesNotExist(generateDocumentPath(editor!.document.uri.fsPath) + newComponentName + "." + currentComponentEXT)) return
 			// console.log('File does not exist.')
 			// Snippet of all code to be copied into new component file
-			let snippet = buildSnippet(getTemplate(currentComponentEXT || 'jsx'), newComponentName || "New Component", codeBlock)
+			let snippet = buildSnippet(getTemplate(currentComponentEXT || 'jsx'), newComponentName || "New Component", codeBlock!)
 
 			// Create the new file
 			// let createFileResponse = await createNewFile(snippet, newComponentName!, editor!, currentComponentEXT!)
 
 			// Delete code block from source file
 			let codeReplacementResponse = await replaceSelectionWithComponentTag(editor!, newComponentName!)
-			
+
 			// Add import statement for new component path into current file
 			let insertImportResponse = await insertImportStatement(editor!, newComponentName!)
 
 		})
 	)
+
+	// Inserts a new component into the existing file.  This will not need to include an import statement or new file creation call.
 	context.subscriptions.push(
-		vscode.commands.registerCommand('extractor.createComponentFile', async () => { }))
+		vscode.commands.registerCommand('extractor.extractToModuleScope', async () => {
 
 
+		}))
+	context.subscriptions.push(
+		vscode.commands.registerCommand('extractor.extractToEnclosingScope', async () => {
+			// get global vars
+			let window = vscode.window
+			let editor = window.activeTextEditor
+			let codeBlock= getCodeSelection(window, editor!)
+
+		}))
+	// Test Commands
+	// context.subscriptions.push(
+	// 	vscode.commands.registerCommand('extractor.selectToClosingTag', async () =>{
+	// 		await getFullSelectionFromTag()
+	// 	})
+	// )
 }
 
 // this method is called when your extension is deactivated
@@ -106,29 +114,34 @@ async function validateFileDoesNotExist(filePath: string): Promise<boolean> {
 	}
 
 }
-// Tag parsing
-function parseJSX(jsxString: string): string {
-	interface Map {
-
+// Selecting
+function getCodeSelection(window: any, editor: vscode.TextEditor) {
+	// Expand selection in editor to encompass entire selected tag/tags
+	expandSelection()
+	// Copy in full selection to text
+	let selection: vscode.Selection[] | undefined = editor?.selections
+	if (selection?.length === 0) {
+		window.showInformationMessage("No selection to spin off.")
+		return
 	}
-	let map = {
-		root: {
-
-		}
-	}
-	let pointer = map.root
-	let parse = new parser.Parser({
-		onopentag(name, att) {
-			console.log(`Found opening ${name} tag.`)
-
-		},
-		onclosetag(name) {
-			console.log(`Found closing ${name} tag.`)
-		}
+	// Loop through each line of selection and build code block
+	let codeBlock = ""
+	selection?.forEach((line, index) => {
+		let text = editor.document?.getText(new vscode.Range(line.start, line.end))
+		codeBlock += text
 	})
-	parse.write(jsxString)
-	parse.end()
+	return codeBlock
+
+}
+async function expandSelection() {
+	let selectWholeTag = await vscode.commands.executeCommand('editor.emmet.action.balanceOut')
+}
+// Tag parsing
+function parseJSX(jsxString: string) {
 	return jsxString
+}
+// Refactoring Methods
+function refactorToArrow() {
 }
 // Templating
 function getTemplate(extension: string): string {
@@ -187,8 +200,12 @@ async function insertImportStatement(editor: vscode.TextEditor, newComponentName
 	}
 	return 'Import not inserted.'
 }
+// Insert new component into existing file.
+function insertComponentIntoCurrentFile(editor: vscode.TextEditor) {
+
+}
 // Creates a new string insert representing the newly creating component as a JSX tag
-function getNewComponentTag(tagname: String){
+function getNewComponentTag(tagname: String) {
 	// Get framework specific template???
 	// Temp for React only
 	return `<${tagname} />`
@@ -201,7 +218,7 @@ async function replaceSelectionWithComponentTag(editor: vscode.TextEditor, newCo
 	let wsedit = new vscode.WorkspaceEdit()
 	wsedit.replace(editor.document.uri, new vscode.Range(start, end), getNewComponentTag(newComponentName))
 	return await vscode.workspace.applyEdit(wsedit)
-	
+
 }
 
 // Testing
