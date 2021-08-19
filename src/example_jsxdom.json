@@ -1,0 +1,200 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 151,
+  "loc": {
+    "start": { "line": 1, "column": 0 },
+    "end": { "line": 4, "column": 21 }
+  },
+  "errors": [],
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 151,
+    "loc": {
+      "start": { "line": 1, "column": 0 },
+      "end": { "line": 4, "column": 21 }
+    },
+    "sourceType": "script",
+    "interpreter": null,
+    "body": [
+      {
+        "type": "ExpressionStatement",
+        "start": 0,
+        "end": 151,
+        "loc": {
+          "start": { "line": 1, "column": 0 },
+          "end": { "line": 4, "column": 21 }
+        },
+        "expression": {
+          "type": "JSXElement",
+          "start": 0,
+          "end": 151,
+          "loc": {
+            "start": { "line": 1, "column": 0 },
+            "end": { "line": 4, "column": 21 }
+          },
+          "openingElement": {
+            "type": "JSXOpeningElement",
+            "start": 0,
+            "end": 34,
+            "loc": {
+              "start": { "line": 1, "column": 0 },
+              "end": { "line": 1, "column": 34 }
+            },
+            "name": {
+              "type": "JSXIdentifier",
+              "start": 1,
+              "end": 7,
+              "loc": {
+                "start": { "line": 1, "column": 1 },
+                "end": { "line": 1, "column": 7 }
+              },
+              "name": "header"
+            },
+            "attributes": [
+              {
+                "type": "JSXAttribute",
+                "start": 8,
+                "end": 33,
+                "loc": {
+                  "start": { "line": 1, "column": 8 },
+                  "end": { "line": 1, "column": 33 }
+                },
+                "name": {
+                  "type": "JSXIdentifier",
+                  "start": 8,
+                  "end": 17,
+                  "loc": {
+                    "start": { "line": 1, "column": 8 },
+                    "end": { "line": 1, "column": 17 }
+                  },
+                  "name": "className"
+                },
+                "value": {
+                  "type": "StringLiteral",
+                  "start": 18,
+                  "end": 33,
+                  "loc": {
+                    "start": { "line": 1, "column": 18 },
+                    "end": { "line": 1, "column": 33 }
+                  },
+                  "extra": {
+                    "rawValue": "class1 class2",
+                    "raw": "\"class1 class2\""
+                  },
+                  "value": "class1 class2"
+                }
+              }
+            ],
+            "selfClosing": false
+          },
+          "closingElement": {
+            "type": "JSXClosingElement",
+            "start": 142,
+            "end": 151,
+            "loc": {
+              "start": { "line": 4, "column": 12 },
+              "end": { "line": 4, "column": 21 }
+            },
+            "name": {
+              "type": "JSXIdentifier",
+              "start": 144,
+              "end": 150,
+              "loc": {
+                "start": { "line": 4, "column": 14 },
+                "end": { "line": 4, "column": 20 }
+              },
+              "name": "header"
+            }
+          },
+          "children": [
+            {
+              "type": "JSXText",
+              "start": 34,
+              "end": 110,
+              "loc": {
+                "start": { "line": 1, "column": 34 },
+                "end": { "line": 3, "column": 40 }
+              },
+              "extra": {
+                "rawValue": "\n                this is a header\n                and here's some numbers ",
+                "raw": "\r\n                this is a header\r\n                and here's some numbers "
+              },
+              "value": "\n                this is a header\n                and here's some numbers "
+            },
+            {
+              "type": "JSXExpressionContainer",
+              "start": 110,
+              "end": 128,
+              "loc": {
+                "start": { "line": 3, "column": 40 },
+                "end": { "line": 3, "column": 58 }
+              },
+              "expression": {
+                "type": "CallExpression",
+                "start": 111,
+                "end": 127,
+                "loc": {
+                  "start": { "line": 3, "column": 41 },
+                  "end": { "line": 3, "column": 57 }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 111,
+                  "end": 119,
+                  "loc": {
+                    "start": { "line": 3, "column": 41 },
+                    "end": { "line": 3, "column": 49 },
+                    "identifierName": "addStuff"
+                  },
+                  "name": "addStuff"
+                },
+                "arguments": [
+                  {
+                    "type": "NumericLiteral",
+                    "start": 120,
+                    "end": 122,
+                    "loc": {
+                      "start": { "line": 3, "column": 50 },
+                      "end": { "line": 3, "column": 52 }
+                    },
+                    "extra": { "rawValue": 44, "raw": "44" },
+                    "value": 44
+                  },
+                  {
+                    "type": "NumericLiteral",
+                    "start": 124,
+                    "end": 126,
+                    "loc": {
+                      "start": { "line": 3, "column": 54 },
+                      "end": { "line": 3, "column": 56 }
+                    },
+                    "extra": { "rawValue": 33, "raw": "33" },
+                    "value": 33
+                  }
+                ]
+              }
+            },
+            {
+              "type": "JSXText",
+              "start": 128,
+              "end": 142,
+              "loc": {
+                "start": { "line": 3, "column": 58 },
+                "end": { "line": 4, "column": 12 }
+              },
+              "extra": {
+                "rawValue": "\n            ",
+                "raw": "\r\n            "
+              },
+              "value": "\n            "
+            }
+          ]
+        }
+      }
+    ],
+    "directives": []
+  },
+  "comments": []
+}
