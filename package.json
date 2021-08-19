@@ -19,7 +19,6 @@
     "onCommand:extractor.extractToModuleScope",
     "onCommand:extractor.extractToEnclosingScope",
     "onCommand:extractor.selectToClosingTag"
-
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -39,6 +38,26 @@
       {
         "command": "extractor.selectToClosingTag",
         "title": "Select to closing JSX tag."
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extractor.extractToNewFile",
+        "key": "ctrl+l n",
+        "mac": "cmd+l n",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "extractor.extractToModuleScope",
+        "key": "ctrl+l m",
+        "mac": "cmd+l m",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "extractor.extractToEnclosingScope",
+        "key": "ctrl+l e",
+        "mac": "cmd+l e",
+        "when": "editorTextFocus"
       }
     ],
     "configuration": [
@@ -61,7 +80,8 @@
           "extractor.enableContextMenu": {
             "type": "boolean",
             "default": true,
-            "description": "Enable component generator options in editor context menu (right click)."          }
+            "description": "Enable component generator options in editor context menu (right click)."
+          }
         }
       }
     ],
@@ -94,7 +114,8 @@
     "test-watch": "tsc -watch -p ./",
     "pretest": "npm run test-compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "testfunc": ""
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
@@ -113,6 +134,7 @@
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
+    "@babel/parser": "^7.15.3",
     "htmlparser2": "^6.1.0"
   }
 }
