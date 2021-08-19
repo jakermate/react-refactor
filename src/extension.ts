@@ -4,8 +4,7 @@ import * as vscode from 'vscode';
 import * as path from 'path'
 import * as fs from 'fs'
 import * as funcs from './lib/func'
-import * as parser from '@babel/parser'
-
+import * as parsers from './lib/parse'
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -43,9 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
 			// Exit script if file already exists with that name
 			// if(await validateFileDoesNotExist(generateDocumentPath(editor!.document.uri.fsPath) + newComponentName + "." + currentComponentEXT)) return
 			// console.log('File does not exist.')
-			console.log('parsing')
-			parseJSX(codeBlock!)
-			console.log('parsed')
+			parsers.parseJSX(codeBlock!)
 
 			// Snippet of all code to be copied into new component file
 			let snippet = getTemplate('functional', funcs.validateComponentName(newComponentName), codeBlock!)
@@ -127,12 +124,7 @@ function getCodeSelection(window: any, editor: vscode.TextEditor) {
 async function expandSelection() {
 	let selectWholeTag = await vscode.commands.executeCommand('editor.emmet.action.balanceOut')
 }
-// Tag parsing
-function parseJSX(jsxString: string) {
-	
-	// console.log(parsedJSX)
-	return jsxString
-}
+
 // Templating
 function getTemplate(type: string = 'functional', componentName: string, codeBlock: string): string {
 	if(type === 'functional') return funcs.returnFunctionalComponent(componentName, codeBlock)
@@ -186,10 +178,7 @@ async function insertImportStatement(editor: vscode.TextEditor, newComponentName
 	}
 	return 'Import not inserted.'
 }
-// Insert new component into existing file.
-function insertComponentIntoCurrentFile(editor: vscode.TextEditor) {
 
-}
 // Creates a new string insert representing the newly creating component as a JSX tag
 function getNewComponentTag(tagname: String) {
 	// Get framework specific template???
@@ -205,9 +194,4 @@ async function replaceSelectionWithComponentTag(editor: vscode.TextEditor, newCo
 	wsedit.replace(editor.document.uri, new vscode.Range(start, end), getNewComponentTag(newComponentName))
 	return await vscode.workspace.applyEdit(wsedit)
 
-}
-
-// Testing
-export {
-	parseJSX
 }
