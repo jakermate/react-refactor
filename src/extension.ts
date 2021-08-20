@@ -5,6 +5,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as funcs from './lib/func'
 import * as parsers from './lib/parse'
+import CodeAction from './lib/actions'
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -13,6 +14,10 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Extract Component Extension Activated');
 
+	// Setup Shortcuts
+	context.subscriptions.push(
+		
+	)
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -20,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Create extractor from selected code
 	context.subscriptions.push(
 		vscode.commands.registerCommand('extractor.extractToNewFile', async () => {
-			console.log('New file command.')
+			console.log('.extractToNewFile')
 			// Set variables for current window/editor
 			let window = vscode.window
 			let editor = window.activeTextEditor
@@ -28,7 +33,6 @@ export function activate(context: vscode.ExtensionContext) {
 			// Get text selection
 			// First, expand selection to fully encompass selected/partially selected tags
 			let codeBlock = getCodeSelection(window, editor!)
-
 
 			// Get input for component name
 			let newComponentName = await window.showInputBox({
@@ -61,23 +65,42 @@ export function activate(context: vscode.ExtensionContext) {
 	// Inserts a new component into the existing file.  This will not need to include an import statement or new file creation call.
 	context.subscriptions.push(
 		vscode.commands.registerCommand('extractor.extractToModuleScope', async () => {
+			console.log('.extractToModuleScope')
 
 
 		}))
 	context.subscriptions.push(
 		vscode.commands.registerCommand('extractor.extractToEnclosingScope', async () => {
+			console.log('.extractToEnclosingScope')
+
 			// get global vars
 			let window = vscode.window
 			let editor = window.activeTextEditor
 			let codeBlock= getCodeSelection(window, editor!)
 
 		}))
-	// Test Commands
-	// context.subscriptions.push(
-	// 	vscode.commands.registerCommand('extractor.selectToClosingTag', async () =>{
-	// 		await getFullSelectionFromTag()
-	// 	})
-	// )
+
+	// Code Actions
+	context.subscriptions.push(
+		vscode.languages.registerCodeActionsProvider('reactjavasctipt', new CodeAction(), {
+			providedCodeActionKinds: CodeAction.providedCodeActionKinds
+		})
+		
+	)
+	context.subscriptions.push(
+		vscode.languages.registerCodeActionsProvider('reacttypescript', new CodeAction(), {
+			providedCodeActionKinds: CodeAction.providedCodeActionKinds
+		})
+	)
+	const reactRefactorActions = vscode.languages.createDiagnosticCollection('React Refactor')
+
+	// Tests
+	context.subscriptions.push(
+		vscode.commands.registerCommand('extractor.testnewfile', async ()=>{
+			let createFileResponse = await createNewFile('testing new file creation', 'NewComponentTest', vscode.window.activeTextEditor!, 'jsx')
+
+		})
+	)
 }
 
 // this method is called when your extension is deactivated
@@ -134,9 +157,7 @@ function getTemplate(type: string = 'functional', componentName: string, codeBlo
 }
 
 async function createNewFile(snippet: string, newName: string, editor: vscode.TextEditor, extension: string): Promise<boolean> {
-	let filepath = generateDocumentPath(editor.document.uri.fsPath)
-	console.log('file path ' + filepath)
-	const newFileURI = vscode.Uri.parse('untitled:' + path.join(filepath, newName + `.${extension}`));
+	const newFileURI = vscode.Uri.parse('untitled:' + path.join(generateDocumentPath(editor.document.uri.fsPath), newName + `.${extension}`));
 	let newDocument = await vscode.workspace.openTextDocument(newFileURI)
 	await vscode.window.showTextDocument(newDocument)
 	let workspaceEdit = new vscode.WorkspaceEdit()
@@ -179,19 +200,14 @@ async function insertImportStatement(editor: vscode.TextEditor, newComponentName
 	return 'Import not inserted.'
 }
 
-// Creates a new string insert representing the newly creating component as a JSX tag
-function getNewComponentTag(tagname: String) {
-	// Get framework specific template???
-	// Temp for React only
-	return `<${tagname} />`
-}
+
 // Replaces the text selection of code in the original text editor with a newly generated JSX tag that matches the newly created component
 async function replaceSelectionWithComponentTag(editor: vscode.TextEditor, newComponentName: string): Promise<boolean> {
 	console.log(JSON.stringify(editor))
 	let start = editor.selection.start
 	let end = editor.selection.end
 	let wsedit = new vscode.WorkspaceEdit()
-	wsedit.replace(editor.document.uri, new vscode.Range(start, end), getNewComponentTag(newComponentName))
+	wsedit.replace(editor.document.uri, new vscode.Range(start, end), funcs.returnComponentTag(newComponentName))
 	return await vscode.workspace.applyEdit(wsedit)
 
 }
