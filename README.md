@@ -17,7 +17,7 @@ This extension contributes the following settings:
 
 * `extractor.defaultComponentLocation`: "New File"/"Current File" to set default behavior for where to generate new component.  (Current file will only work on certain frameworks that allow for multiple components per file.)
 * `extractor.enableContextMenu`: true/false to enable editor context menu commands
-
+* `extractor.enableLightbulb`: true/false to enable lightbulb hint menu
 ## Known Issues
 
 Send a message or leave an issue.
