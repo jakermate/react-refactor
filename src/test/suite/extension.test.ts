@@ -15,10 +15,6 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('JSXParsing Test', () => {
-		assert.strictEqual(ext.parseJSX('<header></header>'), '<header></header>')
-		assert.strictEqual(ext.parseJSX('<header><img /></header>'), '<header><img /></header>')
-		assert.strictEqual(ext.parseJSX('<header><img /></header><p>this is a paragraph</p>'), '<div><header><img /></header><p>this is a paragraph</p></div>') 
- 
-
+	
 	})
 });

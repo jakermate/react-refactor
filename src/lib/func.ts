@@ -28,6 +28,10 @@ export function returnArrowComponent(name: string, codeBlock: string): string{
         }
     `
 }
+export function returnComponentTag(tagname: string){
+    // Creates a new string insert representing the newly creating component as a JSX tag
+	return `<${tagname} />`
+}
 export function validateComponentName(nameRequest: string): string{
     let name = nameRequest.replace(/\s/g, "").toLowerCase().split("(?!^)").map((l,i)=>{
         if(i == 0) return l.toUpperCase()

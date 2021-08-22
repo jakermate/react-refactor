@@ -6,6 +6,8 @@ import * as fs from 'fs'
 import * as funcs from './lib/func'
 import * as parsers from './lib/parse'
 import CodeAction from './lib/actions'
+import { resolve } from 'path';
+import { rejects } from 'assert';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -16,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Setup Shortcuts
 	context.subscriptions.push(
-		
+
 	)
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -76,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
 			// get global vars
 			let window = vscode.window
 			let editor = window.activeTextEditor
-			let codeBlock= getCodeSelection(window, editor!)
+			let codeBlock = getCodeSelection(window, editor!)
 
 		}))
 
@@ -85,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.languages.registerCodeActionsProvider('reactjavasctipt', new CodeAction(), {
 			providedCodeActionKinds: CodeAction.providedCodeActionKinds
 		})
-		
+
 	)
 	context.subscriptions.push(
 		vscode.languages.registerCodeActionsProvider('reacttypescript', new CodeAction(), {
@@ -96,7 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Tests
 	context.subscriptions.push(
-		vscode.commands.registerCommand('extractor.testnewfile', async ()=>{
+		vscode.commands.registerCommand('extractor.testnewfile', async () => {
 			let createFileResponse = await createNewFile('testing new file creation', 'NewComponentTest', vscode.window.activeTextEditor!, 'jsx')
 
 		})
@@ -150,21 +152,30 @@ async function expandSelection() {
 
 // Templating
 function getTemplate(type: string = 'functional', componentName: string, codeBlock: string): string {
-	if(type === 'functional') return funcs.returnFunctionalComponent(componentName, codeBlock)
-	if(type === 'class') return funcs.returnArrowComponent(componentName, codeBlock)
-	if(type === 'arrow') return funcs.returnArrowComponent(componentName, codeBlock)
+	if (type === 'functional') return funcs.returnFunctionalComponent(componentName, codeBlock)
+	if (type === 'class') return funcs.returnArrowComponent(componentName, codeBlock)
+	if (type === 'arrow') return funcs.returnArrowComponent(componentName, codeBlock)
 	return funcs.returnFunctionalComponent(componentName, codeBlock)
 }
 
 async function createNewFile(snippet: string, newName: string, editor: vscode.TextEditor, extension: string): Promise<boolean> {
-	const newFileURI = vscode.Uri.parse('untitled:' + path.join(generateDocumentPath(editor.document.uri.fsPath), newName + `.${extension}`));
-	let newDocument = await vscode.workspace.openTextDocument(newFileURI)
-	await vscode.window.showTextDocument(newDocument)
-	let workspaceEdit = new vscode.WorkspaceEdit()
-	workspaceEdit.insert(newFileURI, new vscode.Position(0, 0), snippet)
-	// Apply edit to workspace
-	let successfulEdit = await vscode.workspace.applyEdit(workspaceEdit)
-	return successfulEdit
+	return new Promise((resolve, reject) => {
+		const newFileURI = vscode.Uri.parse(path.join(generateDocumentPath(editor.document.uri.fsPath), newName + `.${extension}`)).with({scheme: 'untitled'});
+		vscode.workspace.openTextDocument(newFileURI).then((openedDoc) => {
+			vscode.window.showTextDocument(openedDoc)
+			// let workspaceEdit = new vscode.WorkspaceEdit()
+			// workspaceEdit.insert(newFileURI, new vscode.Position(0, 0), snippet)
+			// // Apply edit to workspace
+			// vscode.workspace.applyEdit(workspaceEdit).then((bool) => {
+			// 	if (bool) resolve(true)
+			// 	reject(false)
+			// })
+
+		})
+
+	})
+
+
 }
 function generateDocumentPath(path: string) {
 	console.log('path - ' + path)
